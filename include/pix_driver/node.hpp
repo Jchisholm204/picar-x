@@ -22,14 +22,16 @@ class PixNode : public rclcpp::Node {
         void drive_callback(const std_msgs::msg::Float32::SharedPtr msg);
         void tilt_callback(const std_msgs::msg::Float32::SharedPtr msg);
         void pan_callback(const std_msgs::msg::Float32::SharedPtr msg);
-        void lift_callback(const std_msgs::msg::Float32::SharedPtr msg);
+        void servo1_callback(const std_msgs::msg::Float32::SharedPtr msg);
+        void servo2_callback(const std_msgs::msg::Float32::SharedPtr msg);
         void timer_callback(void);
         PiX px;
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sub_turn,
                                                                 sub_drive,
                                                                 sub_tilt,
                                                                 sub_pan,
-                                                                sub_lift;
+                                                                sub_servo1,
+                                                                sub_servo2;
         rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_distance;
         rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr pub_line;
         rclcpp::TimerBase::SharedPtr timer;

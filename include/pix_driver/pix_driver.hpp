@@ -72,18 +72,32 @@ class PiX {
         int get_drivePower(void);
 
         /**
-         * @brief Set the Duck Lift Angle
+         * @brief Set the angle of Servo 1
          *
          * @param angle Angle to set in Degrees
          */
-        void set_liftAngle(float angle);
+        void set_servo1(float angle);
 
         /**
-         * @brief Get the Duck Lift Angle
+         * @brief Get the angle of Servo 1
          *
-         * @returns angle Angle to set in Degrees
+         * @return The Angle in Degrees
          */
-        float get_liftAngle(void);
+        float get_servo1(void);
+
+        /**
+         * @brief Set the angle of Servo 2
+         *
+         * @param angle Angle to set in Degrees
+         */
+        void set_servo2(float angle);
+
+        /**
+         * @brief Get the angle of Servo 2
+         *
+         * @return The Angle in Degrees
+         */
+        float get_servo2(void);
 
         /**
          * @brief Set the Camera Tilt Angle
@@ -132,7 +146,8 @@ class PiX {
         float turn_offset;
         float turn_angle;
         int drive_power;
-        float lift_angle;
+        float servo1_angle;
+        float servo2_angle;
         float camera_tilt;
         float camera_pan;
 
@@ -186,7 +201,7 @@ class PiX {
         // Trigger / Echo Pins
         constexpr static int pin_ultrasonic_trig = 27;
         constexpr static int pin_ultrasonic_echo = 22;
-        constexpr static int pin_lift[2] = {4, 5};
+        constexpr static int pin_servo[2] = {4, 5};
         constexpr static int pin_camera[2] = {1, 2};
 
         // Device Constants
@@ -199,9 +214,9 @@ class PiX {
         constexpr static uint32_t cam_min_pwm = 35;
         constexpr static uint32_t cam_max_pwm = 195;
 
-        constexpr static float lift_max_deg = 180;
-        constexpr static uint32_t lift_min_pwm = 26;
-        constexpr static uint32_t lift_max_pwm = 135;
+        constexpr static float servo_max_deg = 180;
+        constexpr static uint32_t servo_min_pwm = 26;
+        constexpr static uint32_t servo_max_pwm = 135;
 };
 
 #endif

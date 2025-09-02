@@ -136,18 +136,28 @@ int PiX::get_drivePower(void){
     return this->drive_power;
 }
 
-void PiX::set_liftAngle(float angle){
-    this->lift_angle = angle;
-    uint32_t pwm = lift_min_pwm + (lift_max_pwm-lift_min_pwm)*angle/lift_max_deg;
-    pwm = pwm > lift_max_pwm ? lift_max_pwm : pwm;
-    pwm = pwm < lift_min_pwm ? lift_min_pwm : pwm;
-    this->pwm_set_pulse_width(pin_lift[0], pwm);
-    pwm = lift_max_pwm + lift_min_pwm - pwm;
-    this->pwm_set_pulse_width(pin_lift[1], pwm);
+void PiX::set_servo1(float angle){
+    this->servo1_angle = angle;
+    uint32_t pwm = servo_min_pwm  + (servo_max_pwm-servo_min_pwm)*angle/servo_max_deg;
+    pwm = pwm > servo_max_pwm ? servo_max_pwm : pwm;
+    pwm = pwm < servo_min_pwm ? servo_min_pwm : pwm;
+    this->pwm_set_pulse_width(pin_servo[0], pwm);
 }
 
-float PiX::get_liftAngle(void){
-    return this->lift_angle;
+float PiX::get_servo1(void){
+    return this->servo1_angle;
+}
+
+void PiX::set_servo2(float angle){
+    this->servo2_angle = angle;
+    uint32_t pwm = servo_min_pwm  + (servo_max_pwm-servo_min_pwm)*angle/servo_max_deg;
+    pwm = pwm > servo_max_pwm ? servo_max_pwm : pwm;
+    pwm = pwm < servo_min_pwm ? servo_min_pwm : pwm;
+    this->pwm_set_pulse_width(pin_servo[0], pwm);
+}
+
+float PiX::get_servo2(void){
+    return this->servo2_angle;
 }
 
 void PiX::set_cameraTilt(float angle){

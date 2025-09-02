@@ -14,11 +14,15 @@
 
 PixNode::PixNode() : Node("pix_node"), px() {
     RCLCPP_INFO(this->get_logger(), "PiX Node Initialized");
-    // Setup ROS Launch parameters
-    this->declare_parameter("turn_offset", 0.0);
+    // == Setup ROS Launch parameters (Only change from the launch file) == //
+
+    // Steering Turn Offset (change this to make the car drive straight)
+    this->declare_parameter("turn_offset", 0.0/* Assume Steering is Perfectly Aligned*/);
+    // Software Differential Drive Ratio (Change to help the car turn better)
     this->declare_parameter("diff_ratio", 0.30);
 
-    // Load ROS parameters
+    // == Load ROS parameters == //
+    // Diff Ratio must be between [0, 1]
     diff_ratio = this->get_parameter("diff_ratio").as_double();
     if(diff_ratio > 1) diff_ratio = 1;
     if(diff_ratio < 0) diff_ratio = 0;
@@ -28,10 +32,13 @@ PixNode::PixNode() : Node("pix_node"), px() {
 
     // Timer to periodically publish sensor data
     timer = this->create_wall_timer(
+                // Lower this number to increase polling rate
+                //  (May cause instability)
                 std::chrono::milliseconds(50),
                 std::bind(&PixNode::timer_callback, this)
             );
 
+    // Log the parameters the node was launched with
     RCLCPP_INFO(this->get_logger(), "PiX Turn Offset = %0.2f deg", turn_offset);
     RCLCPP_INFO(this->get_logger(), "PiX Differential Ratio = %0.2f %%", diff_ratio);
 
@@ -46,6 +53,7 @@ PixNode::PixNode() : Node("pix_node"), px() {
                 std::bind(&PixNode::drive_callback, this, std::placeholders::_1)
             );
 
+    // Camera Subscriptions
     sub_tilt = this->create_subscription<std_msgs::msg::Float32>(
                 "pix_tilt", 10,
                 std::bind(&PixNode::tilt_callback, this, std::placeholders::_1)
@@ -56,9 +64,14 @@ PixNode::PixNode() : Node("pix_node"), px() {
                 std::bind(&PixNode::pan_callback, this, std::placeholders::_1)
             );
 
-    sub_lift = this->create_subscription<std_msgs::msg::Float32>(
-                "pix_lift", 10,
-                std::bind(&PixNode::lift_callback, this, std::placeholders::_1)
+    // Servo Subscriptions
+    sub_servo1 = this->create_subscription<std_msgs::msg::Float32>(
+                "pix_servo1", 10,
+                std::bind(&PixNode::servo1_callback, this, std::placeholders::_1)
+            );
+    sub_servo2 = this->create_subscription<std_msgs::msg::Float32>(
+                "pix_servo2", 10,
+                std::bind(&PixNode::servo2_callback, this, std::placeholders::_1)
             );
 
     // Publisher for ultrasonic distance
@@ -91,18 +104,31 @@ void PixNode::drive_callback(const std_msgs::msg::Float32::SharedPtr msg) {
 }
 
 void PixNode::tilt_callback(const std_msgs::msg::Float32::SharedPtr msg) {
-    // RCLCPP_INFO(this->get_logger(), "Setting tilt angle to: %.2f", msg->data);
+#ifdef DEBUG
+    RCLCPP_INFO(this->get_logger(), "Setting tilt angle to: %.2f", msg->data);
+#endif
     this->px.set_cameraTilt(msg->data);
 }
 
 void PixNode::pan_callback(const std_msgs::msg::Float32::SharedPtr msg) {
-    // RCLCPP_INFO(this->get_logger(), "Setting pan angle to: %.2f", msg->data);
+#ifdef DEBUG
+    RCLCPP_INFO(this->get_logger(), "Setting pan angle to: %.2f", msg->data);
+#endif
     this->px.set_cameraPan(msg->data);
 }
 
-void PixNode::lift_callback(const std_msgs::msg::Float32::SharedPtr msg) {
-    // RCLCPP_INFO(this->get_logger(), "Setting lift height to: %.2f", msg->data);
-    this->px.set_liftAngle(msg->data);
+void PixNode::servo1_callback(const std_msgs::msg::Float32::SharedPtr msg) {
+#ifdef DEBUG
+    RCLCPP_INFO(this->get_logger(), "Setting Servo 1 to: %.2f", msg->data);
+#endif
+    this->px.set_servo1(msg->data);
+}
+
+void PixNode::servo2_callback(const std_msgs::msg::Float32::SharedPtr msg) {
+#ifdef DEBUG
+    RCLCPP_INFO(this->get_logger(), "Setting Servo 2 to: %.2f", msg->data);
+#endif
+    this->px.set_servo2(msg->data);
 }
 
 // Timer function to publish sensor data (e.g., ultrasonic distance)
