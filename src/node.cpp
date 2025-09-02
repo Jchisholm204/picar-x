@@ -84,12 +84,16 @@ PixNode::PixNode() : Node("pix_node"), px() {
 
 // Callback functions for movement commands
 void PixNode::turn_callback(const std_msgs::msg::Float32::SharedPtr msg) {
-    // RCLCPP_INFO(this->get_logger(), "Setting turn angle to: %.2f", msg->data);
+#ifdef DEBUG
+    RCLCPP_INFO(this->get_logger(), "Setting turn angle to: %.2f", msg->data);
+#endif
     this->px.set_turnAngle(msg->data);
 }
 
 void PixNode::drive_callback(const std_msgs::msg::Float32::SharedPtr msg) {
-    // RCLCPP_INFO(this->get_logger(), "Setting drive speed to: %.2f", msg->data);
+#ifdef DEBUG
+    RCLCPP_INFO(this->get_logger(), "Setting drive speed to: %.2f", msg->data);
+#endif
     float left_power = msg->data, right_power = msg->data;
     float turn_angle = this->px.get_turnAngle();
     // Slow right wheel on right turn

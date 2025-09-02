@@ -14,6 +14,11 @@
 #include "std_msgs/msg/float32.hpp"
 #include "pix_driver/pix_driver.hpp"
 
+// Uncomment to include debugging statements
+// #define DEBUG
+
+// Uncomment to enable Smooth Turning
+
 class PixNode : public rclcpp::Node {
     public:
         PixNode();
